@@ -1,7 +1,7 @@
 # 2D_Platform_Game_project
 ## My Unity project
 ### Dowload asset in unity store
-### Code in Script folder
+### Code in Scripts folder
 ### Use unity technology: 
 - Get player input
 - Single pattern
