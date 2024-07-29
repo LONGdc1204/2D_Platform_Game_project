@@ -8,14 +8,16 @@ public class FallingTrap : MonoBehaviour
     private Rigidbody2D rb;
     private BoxCollider2D[] colliders;
     private Animator anim;  
-    public Player player;
 
     [SerializeField] private FallingTrapManager fallingManager;
+    [SerializeField] private float positionX;
+    private int index;
+    private float positionXValue = 59.38344f;
 
     private float speed;
     [SerializeField] private float distance;
     private Vector3[] waypoints;
-    private int index = 0;
+    [SerializeField] private int addPositionX = 0;
     private bool canMove = true;
 
     [Header("Falling details")]
@@ -25,18 +27,27 @@ public class FallingTrap : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         colliders = GetComponents<BoxCollider2D>();
         anim = GetComponent<Animator>();
+        positionX = transform.position.x;
     }
     void Start()
-    {
+    {   
+        if (positionX == positionXValue) {
+            addPositionX = 0;
+        }
+        else if (positionX == positionXValue + 5) {
+            addPositionX = 5;
+        }
+        else {
+            addPositionX = 10;
+        }
+
         SetupWaypoints();
-        if (player == null) {
-            player = FindObjectOfType<Player>();
+        
+        if (fallingManager == null) {
+            fallingManager = GameObject.Find("Falling Trap Manager").GetComponent<FallingTrapManager>();
         }
     }
     private void Update() {
-        if (player == null && gameObject == null) {
-            fallingManager.ResetFallingTrap();
-        }
         HandleMovement();
     }
 
@@ -63,7 +74,7 @@ public class FallingTrap : MonoBehaviour
         Player player = other.gameObject.GetComponent<Player>();
         if (player != null) {
             Invoke(nameof(FallingActivate), fallingDelay);
-            fallingManager.ResetFallingTrap();
+            fallingManager.ResetFallingTrap(addPositionX);
         }
     }
     private void FallingActivate() {
@@ -75,6 +86,6 @@ public class FallingTrap : MonoBehaviour
         foreach(BoxCollider2D collider in colliders) {
             collider.enabled = false;
         }
-        Destroy(gameObject, 10f);
+        Destroy(gameObject, 5f);
     }
 }
